@@ -1,5 +1,4 @@
 venv/
 virtualenv/
 .env/
-*.env
 __pycache__/

@@ -73,3 +73,4 @@ The autoscaler app can be made to watch itself so that it may handle the load ca
 
 ### Production System Diagram
 
+![Production Diagram](autoscaler.png "Production Diagram")

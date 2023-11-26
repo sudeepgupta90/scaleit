@@ -20,7 +20,7 @@ pip install -f requirements.txt
 python app.py
 ```
 
-- You can check scaleit app on `default port 8123`
+- You can check scaleit app on `(default) port 8123`
 - and, prometheus metrics on `port 8000`
 
 ### Docker Setup
@@ -48,17 +48,17 @@ run tests
 
 The autoscaler application is designed to be highly configurable with the assumption that the following endpoints will be available to scale the application
 
-- app/status - via GET requests, which reports the application health in the prescribed format as given in the requirements
-- app/replcias - via PUT request which allows to update the application replicas
+- `app/status` - via GET requests, which reports the application health in the prescribed format as given in the requirements
+- `app/replcias` - via PUT request which allows to update the application replicas
 
 The following parameters have been configured in the Application via environment variables and env file:
 
--  APP_SERVICE_URL - URL of the Autoscaler app
--  APP_SERVICE_PORT - Port to which the app is bound
--  SCALE_RESOLUTION_TIME - The grain/period at which the application will be checked for scaling
--  SCALE_METRIC - The expected metric value to be retained
--  SCALE_TOLERANCE - Tolerance value till which we do not require scaling to kick in, default is at .1
--  LOG_LEVEL - log level of the application, default is INFO
+-  `APP_SERVICE_URL` - URL of the Autoscaler app
+-  `APP_SERVICE_PORT`- Port to which the app is bound
+-  `SCALE_RESOLUTION_TIME` - The grain/period at which the application will be checked for scaling
+-  `SCALE_METRIC` - The expected metric value to be retained
+-  `SCALE_TOLERANCE` - Tolerance value till which we do not require scaling to kick in, default is at .1
+-  `LOG_LEVEL` - log level of the application, default is INFO
 
 ![App Logs](media/app_logs.png "App Logs")
 
@@ -68,8 +68,8 @@ We also have Promtheus Observability integration and the logs can be observed at
 
 We have the following metrics being exported:
 
-- autoscaler_heartbeat : this metric can be used to monitor autoscaler status
-- requests_failures : this metrics has the labels `['method', 'endpoint']` and can be used to track request failures at the scaleit application endpoints
+- `autoscaler_heartbeat` : this metric can be used to monitor autoscaler status
+- `requests_failures` : this metrics has the labels `['method', 'endpoint']` and can be used to track request failures at the scaleit application endpoints
 
 ![prometheus metrics](media/prometheus_metrics.png "prometheus metrics")
 

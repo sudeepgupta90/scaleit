@@ -20,6 +20,9 @@ pip install -f requirements.txt
 python app.py
 ```
 
+- You can check scaleit app on `default port 8123`
+- and, prometheus metrics on `port 8000`
+
 ### Docker Setup
 
 Preferred way to automated setup
@@ -29,13 +32,14 @@ make setup
 ```
 Grab a coke while the image builds, and when you come back you will find logs being exported. So you will be able to observe the application in execution
 
-
 ```
-make help
+make run
 ```
-Prints all the options which will help you control the project environment like - build, deploy, stop
+Deploy everything on Docker compose
 
 ## Code Walkthrough
+
+### Main Functionality
 
 The autoscaler application is designed to be highly configurable with the assumption that the following endpoints will be available to scale the application
 
@@ -51,6 +55,18 @@ The following parameters have been configured in the Application via environment
 -  SCALE_TOLERANCE - Tolerance value till which we do not require scaling to kick in, default is at .1
 -  LOG_LEVEL - log level of the application, default is INFO
 
+![App Logs](media/app_logs.png "App Logs")
+
+### Observability
+
+We also have Promtheus Observability integration and the logs can be observed at `port 8000`
+
+We have the following metrics being exported:
+
+- autoscaler_heartbeat : this metric can be used to monitor autoscaler status
+- requests_failures : this metrics has the labels `['method', 'endpoint']` and can be used to track request failures at the scaleit application endpoints
+
+![prometheus metrics](media/prometheus_metrics.png "prometheus metrics")
 
 ## How to do things differently in Production
 
@@ -63,14 +79,9 @@ In production grade development:
 - A customised K8s operator can watch for the config CRD's which it can collect and feed to the main autoscaler application
 - The autoscaler application can then be scaled to watch/scale the deployed applications
 
-### Add Observability
-Currently, there is no Observability for this app which is in-built, but we can use both Open Telemetry or StatsD (now losing popularity, but still a popular option) to emit metrics, specifically with following names & labels:
-
-- autoscaler_request{app_name="<app_name>", type=Get/Put, response_status= (200|204 ... your http response status code), message="<error> msg"}
-
 ### Self Management
 The autoscaler app can be made to watch itself so that it may handle the load capacity, and service accordingly
 
 ### Production System Diagram
 
-![Production Diagram](autoscaler.png "Production Diagram")
+![Production Diagram](media/autoscaler.png "Production Diagram")

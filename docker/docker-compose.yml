@@ -14,10 +14,11 @@ services:
     image: scaleit
     entrypoint: python
     command: app.py
+    ports: ["8000:8000"] # help you observe prometheus log
     environment:
       -  APP_SERVICE_URL=http://scaleit
       -  APP_SERVICE_PORT=8123
       -  SCALE_RESOLUTION_TIME=5
       -  SCALE_METRIC=.80
       -  SCALE_TOLERANCE=.10
-      -  LOG_LEVEL=INFO
+      -  LOG_LEVEL=DEBUG

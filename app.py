@@ -1,11 +1,12 @@
 import json
-from math import ceil
 import os
 import requests
 import time
 import logging
 import sys
 
+from math import ceil
+from prometheus_client import start_http_server, Info, Counter
 
 def scaleReplicas(currentReplicas:int, currentMetricValue:float,
                   desiredMetricValue:float=.8, tolerance:float=.1)->int:
@@ -44,10 +45,14 @@ if __name__ == "__main__":
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(format)
     log.addHandler(handler)
-
-    # start an infinite loop which calls the App service to be monitored after every SCALE_RESOLUTION_TIME secs
-    application_no_status:int= 0
-    application_no_update:int= 0
+    
+    start_http_server(port=8000)
+    
+    counter_hb= Counter('autoscaler_heartbeat', "autoscaler heartbeat")
+    counter_req = Counter('requests_failures', 'HTTP Failures', ['method', 'endpoint'])
+    counter_req.labels("get", "/app/status")
+    counter_req.labels("put", "/app/replicas")
+    
     while True:
         log.debug("getting app status")
         get_resp= requests.get(
@@ -61,8 +66,6 @@ if __name__ == "__main__":
             
             currentReplicas= int(get_resp.json()["replicas"])
             currentMetricValue= float(get_resp.json()["cpu"]["highPriority"])
-            
-            # print (currentReplicas, currentMetricValue) # feed this into otel or statsd
             
             s= scaleReplicas(currentReplicas= currentReplicas,
                              currentMetricValue=currentMetricValue,
@@ -79,12 +82,12 @@ if __name__ == "__main__":
                 )
                 
                 if put_resp.status_code != 204:
-                    application_no_update+=1
                     log.warning("Application could not update")
-                # print (put_resp.text, put_resp.status_code) # feed this into otel or statsd
-        
-        if get_resp.status_code != 200:
-            application_no_status +=1
+                    counter_req.labels("put", "/app/replicas").inc()
+        else:
             log.warning("Application did not send any response")
+            counter_req.labels("get", "/app/status").inc()
+
         
         time.sleep(SCALE_RESOLUTION_TIME) # scaling resolution time
+        counter_hb.inc()

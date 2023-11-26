@@ -11,3 +11,6 @@ run:
 
 stop:
 	docker-compose -f ./docker/docker-compose.yml stop
+
+tests:
+	python tests.py

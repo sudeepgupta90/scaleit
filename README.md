@@ -37,6 +37,11 @@ make run
 ```
 Deploy everything on Docker compose
 
+```
+make tests
+```
+run tests
+
 ## Code Walkthrough
 
 ### Main Functionality

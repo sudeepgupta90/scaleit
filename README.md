@@ -64,7 +64,7 @@ The following parameters have been configured in the Application via environment
 
 ### Observability
 
-We also have Promtheus Observability integration and the logs can be observed at `port 8000`
+We also have Prometheus Observability integration and the logs can be observed at `port 8000`
 
 We have the following metrics being exported:
 
@@ -83,6 +83,14 @@ In production grade development:
 - The configuration of the different applications (to be monitored) can be deployed in the application deployment namespace
 - A customised K8s operator can watch for the config CRD's which it can collect and feed to the main autoscaler application
 - The autoscaler application can then be scaled to watch/scale the deployed applications
+
+### Other improvements
+
+- Observability: Currently we integrated prometheus metrics directly, a batter option would have been to use Open Telemetry which is compatible with a wider range of tooling
+
+-  Programming Language: Given more time, Golang is better suited for such kind of projects rather than python
+
+- Helm Chart: Helm Chart to dpeloy the entire setup on K8s
 
 ### Self Management
 The autoscaler app can be made to watch itself so that it may handle the load capacity, and service accordingly
